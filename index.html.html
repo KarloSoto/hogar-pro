@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Hogar PRO" />
+<meta name="theme-color" content="#0b0c10" />
+<title>Hogar PRO | iPhone</title>
+
+<style>
+  :root {
+    --bg1:#0b0c10; --bg2:#0f1424;
+    --card: rgba(255,255,255,.06);
+    --card2: rgba(255,255,255,.08);
+    --line: rgba(255,255,255,.10);
+    --txt: #eef2ff;
+    --muted:#aab3c5;
+    --accent:#7aa2ff;
+    --accent2:#22c55e;
+    --danger:#ff6b6b;
+    --shadow: 0 14px 50px rgba(0,0,0,.35);
+    --radius: 18px;
+  }
+
+  *{box-sizing:border-box; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--txt);
+    background: radial-gradient(1200px 700px at 15% 10%, rgba(122,162,255,.18), transparent 55%),
+                radial-gradient(1200px 700px at 85% 15%, rgba(34,197,94,.14), transparent 55%),
+                linear-gradient(180deg, var(--bg1), var(--bg2));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  header{
+    position: sticky; top:0; z-index:10;
+    backdrop-filter: blur(10px);
+    background: rgba(11,12,16,.78);
+    border-bottom: 1px solid var(--line);
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .wrap{max-width:1200px; margin:0 auto; padding:14px 14px;}
+  h1{margin:0; font-size:18px; letter-spacing:.2px;}
+  .sub{margin-top:6px; color:var(--muted); font-size:12px}
+
+  .topbar{
+    display:flex; gap:10px; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; margin-top:10px
+  }
+  .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+
+  input,button,select,textarea{
+    border-radius: 14px; border:1px solid var(--line);
+    background: rgba(10,12,20,.65); color: var(--txt);
+    padding: 12px 12px; outline:none;
+    font-size: 16px;
+  }
+  textarea{width:100%; min-height:80px; resize:vertical;}
+  button{cursor:pointer;}
+  button.primary{border-color: rgba(122,162,255,.55); background: rgba(122,162,255,.16);}
+  button.success{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.14);}
+  button.danger{border-color: rgba(255,107,107,.55); background: rgba(255,107,107,.12);}
+  button.ghost{border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.06);}
+  input:focus,select:focus,textarea:focus{box-shadow: 0 0 0 3px rgba(122,162,255,.14);}
+
+  .grid{display:grid; gap:14px; grid-template-columns: 1fr 1fr 1fr; margin-top: 14px;}
+  @media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden;
+  }
+  .cardHead{
+    padding: 14px 14px 12px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background: linear-gradient(135deg, rgba(122,162,255,.10), rgba(34,197,94,.06));
+    border-bottom:1px solid var(--line);
+  }
+  .name{font-weight:700; font-size:16px}
+  .kpi{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+  .badge{
+    font-size:12px; color:var(--muted); padding:6px 10px; border-radius: 999px;
+    border: 1px solid var(--line); background: rgba(0,0,0,.18);
+  }
+
+  .progressWrap{padding: 10px 14px 0}
+  .bar{height: 10px; border-radius: 999px; border: 1px solid var(--line); background: rgba(0,0,0,.20); overflow:hidden;}
+  .fill{height:100%; width:0%; background: linear-gradient(90deg, var(--accent), var(--accent2));}
+  .percent{padding: 8px 14px 12px; color: var(--muted); font-size:12px; display:flex; justify-content:space-between}
+
+  .list{padding: 0 14px 14px; display:flex; flex-direction:column; gap:12px}
+  .task{display:flex; gap:12px; align-items:flex-start; padding: 12px 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--card2);}
+  .task.done{opacity:.70;}
+  .task.done .title{text-decoration: line-through;}
+  .task input[type="checkbox"]{width:24px;height:24px; accent-color: var(--accent2); margin-top:2px;}
+
+  .meta{flex:1}
+  .title{margin:0; font-weight:650; font-size:15px; line-height:1.25}
+  .subline{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .chip{font-size:12px; color:var(--muted); padding:6px 10px; border-radius:999px; border:1px solid var(--line); background: rgba(0,0,0,.16)}
+  .details{margin-top:10px; color:var(--muted); font-size:13px; display:none;}
+  .empty{color:var(--muted); font-size:13px; padding:14px;}
+
+  .miniBtn{
+    border-radius: 12px; padding:10px 10px; font-size:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: var(--txt);
+    cursor:pointer;
+  }
+
+  .editPanel{
+    margin-top:12px;
+    border-top:1px solid rgba(255,255,255,.10);
+    padding-top:12px;
+    display:none;
+  }
+  .row{display:flex; gap:10px; flex-wrap:wrap;}
+  .row > *{flex:1}
+
+  .toast{
+    position: fixed; left: 14px; right:14px; bottom: calc(14px + env(safe-area-inset-bottom));
+    background: rgba(10,12,20,.88); border:1px solid var(--line);
+    border-radius: 16px; box-shadow: var(--shadow); padding: 12px 14px; display:none;
+  }
+  .toast strong{display:block; margin-bottom:4px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🏠 Hogar PRO</h1>
+    <div class="sub">iPhone-ready · editable + canjeable</div>
+
+    <div class="topbar">
+      <div class="controls">
+        <input type="date" id="datePick"/>
+        <button class="primary" id="todayBtn">Hoy</button>
+      </div>
+
+      <div class="controls">
+        <button class="success" id="exportBtn">Exportar</button>
+        <button id="importBtn">Importar</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="grid" class="grid"></div>
+  <div style="height:10px"></div>
+  <button class="danger" id="resetBtn" style="width:100%;">Reiniciar todo</button>
+</main>
+
+<div class="toast" id="toast">
+  <strong id="toastTitle">¡Felicitaciones!</strong>
+  <div id="toastMsg"></div>
+</div>
+
+<input type="file" id="fileInput" accept="application/json" style="display:none" />
+
+<script>
+  const APP = {"people": ["Gaby", "Karlo", "Keisi"], "template": [{"id": "2524406570846228897", "title": "Limpiar la mesa", "frequency": {"kind": "daily", "raw": "Diaria (después de cada comida y juego)"}, "notes": "La mesa no debe tener manchas, no sólo es quitarle la basura sino que quede bien limpia si hay huellas o se mancha.", "assignee": "Keisi", "assigneeRule": {"weekdays": "Keisi", "weekends": "Gaby"}}, {"id": "3228992202895130139", "title": "Sacudir las sillas", "frequency": {"kind": "weekly", "dows": [5], "raw": "1 vez por semana de preferencia viernes para el fin de semana compartir"}, "notes": "", "assignee": "Keisi", "assigneeRule": null}, {"id": "9083383074170906187", "title": "Sacar la basura", "frequency": {"kind": "weekly", "dows": [2, 4, 6], "raw": "Martes, jueves o sábado"}, "notes": "", "assignee": "Gaby", "assigneeRule": null}, {"id": "4039847107386030774", "title": "Recoger popó de Honita", "frequency": {"kind": "daily", "raw": "Diaria"}, "notes": "", "assignee": "Karlo", "assigneeRule": null}, {"id": "509365923229391706", "title": "Limpiar patio de enfrente y regar plantas", "frequency": {"kind": "daily", "raw": "Diaria "}, "notes": "Regar plantas diario. Barrer un día si y el otro no. Limpiar debajo de la alfombra de la entrada.", "assignee": "Keisi", "assigneeRule": null}, {"id": "8628104291781219691", "title": "Lavar platos", "frequency": {"kind": "daily", "raw": "Diaria"}, "notes": "Prefiero lavar fin de semana yo (Gaby), ya que entre semana llego tarde y cuando terminamos de cenar estoy durmiendo a Aitana. Pido que vaso que se use o plato sea lavado, para que cuando sean de los tiempos de comida no estén acumulados otros. Por favor que en las noches esté vacío el lavaplatos para poder lavar pachas, como saben tengo segundos para lavar ya que no puedo dejar a Aitana en la silla por mucho tiempo.", "assignee": "Keisi", "assigneeRule": {"weekdays": "Keisi", "weekends": "Gaby"}}, {"id": "4034223445622146088", "title": "Organizar la lacena", "frequency": {"kind": "monthly", "monthDay": 1, "raw": "1 vez al mes o cuando se hagan compras"}, "notes": "", "assignee": "Keisi", "assigneeRule": null}, {"id": "2533391717512083471", "title": "Limpiar refri y guardar cosas de la refri", "frequency": {"kind": "monthly", "monthDay": 1, "raw": "1 vez al mes o cuando se hagan compras"}, "notes": "", "assignee": "Karlo", "assigneeRule": null}, {"id": "2898594047618005859", "title": "Barrer", "frequency": {"kind": "weekly", "dows": [6], "raw": "3 veces por semana"}, "notes": "Keisi le ayuda a Wall-E y los días que Karlo no pasa al Wall-E para que se mantenga limpio.", "assignee": "Keisi", "assigneeRule": null}, {"id": "8150015523481849001", "title": "Limpiar (Wall-E)", "frequency": {"kind": "weekly", "dows": [2, 6], "raw": "2–3 veces por semana"}, "notes": "", "assignee": "Karlo", "assigneeRule": null}, {"id": "5268421344739308745", "title": "Acomodar platos secos", "frequency": {"kind": "daily", "raw": "Diaria (entre semana)"}, "notes": "Prefiero lavar y colocar fin de semana yo (Gaby), ya que entre semana llego tarde y cuando terminamos de cenar estoy durmiendo a Aitana. De preferencia que no hayan trastos eso produce mucho ruido visual y se ve desordenado. Al igual que tener cosas encima del desayunador y de la mesa. Por favor, guardarlas en su lugar.", "assignee": "Gaby", "assigneeRule": {"weekdays": "Keisi", "weekends": "Gaby"}}, {"id": "4842866236723685321", "title": "Limpiar estufa", "frequency": {"kind": "weekly", "dows": [6], "raw": "1 vez por semana"}, "notes": "Yo puedo limpiar fin de semana, sin embargo si Keisi cocina y se cae comida o ve que está enpolvado por el viento, por favor pasar un trapo", "assignee": "Keisi", "assigneeRule": null}, {"id": "5388096127045038109", "title": "Lavar el baño", "frequency": {"kind": "weekly", "dows": [6], "raw": "1 vez por semana"}, "notes": "", "assignee": "Gaby", "assigneeRule": null}, {"id": "6477307364575477948", "title": "Cepillar a Honita", "frequency": {"kind": "weekly", "dows": [6], "raw": "1 vez por semana"}, "notes": "", "assignee": "Karlo", "assigneeRule": null}, {"id": "4799668547489448622", "title": "Regar plantas adentro", "frequency": {"kind": "weekly", "dows": [2, 6], "raw": "2 veces por semana"}, "notes": "", "assignee": "Karlo", "assigneeRule": null}, {"id": "434218927328188087", "title": "Sacudir mueble de la TV y cocina", "frequency": {"kind": "weekly", "dows": [6], "raw": "1 vez por semana"}, "notes": "", "assignee": "Keisi", "assigneeRule": null}, {"id": "8500634553785501097", "title": "Planchar", "frequency": {"kind": "weekly", "dows": [6], "raw": "1 vez por semana"}, "notes": "", "assignee": "Gaby", "assigneeRule": null}, {"id": "5714683830151281263", "title": "Llenar el ecofiltro", "frequency": {"kind": "weekly", "dows": [6], "raw": "Cada 2–3 días"}, "notes": "", "assignee": "Keisi", "assigneeRule": null}, {"id": "426475863940203585", "title": "Cocinar", "frequency": {"kind": "daily", "raw": "Diaria (según planificación)"}, "notes": "", "assignee": "Karlo", "assigneeRule": null}]};
+  const PHRASES = ["¡Sos un crack! 🔥", "Hoy la rompiste 👏", "¡Qué disciplina la tuya! 💪", "¡Objetivo cumplido! 🏁", "¡Eres el/la mejor! ⭐", "¡Casa en modo PRO! 🏠✨", "¡Eso es constancia! 🚀", "¡Se nota el compromiso! 🧠", "¡Excelente trabajo! 😎", "¡Lo lograste! 🎉"];
+  const STORAGE_KEY = "hogar_pro_v3_iphone_fix";
+
+  // ===== iPhone Safe Start =====
+  const isiPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isFile = location.protocol === "file:";
+
+  // Si lo abrieron desde Archivos/iCloud (vista previa), suele romper localStorage => mostramos instrucción
+  if (isiPhone && isFile) {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+        background:linear-gradient(180deg,#0b0c10,#0f1424);color:#eef2ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;">
+        <div style="max-width:520px;border:1px solid rgba(255,255,255,.12);border-radius:18px;
+          background:rgba(255,255,255,.06);padding:18px 16px;box-shadow:0 14px 50px rgba(0,0,0,.35);">
+          <div style="font-size:18px;font-weight:800;margin-bottom:8px;">📱 Para que funcione en iPhone</div>
+          <div style="color:#aab3c5;font-size:14px;line-height:1.4;">
+            Estás abriendo el archivo en vista previa (Archivos/iCloud). En iOS eso puede bloquear el almacenamiento
+            y por eso la app queda vacía.<br><br>
+            ✅ Abre el archivo en <b>Safari</b> así:<br>
+            <b>Compartir</b> → <b>Abrir en Safari</b><br><br>
+            Luego (opcional): <b>Compartir</b> → <b>Agregar a pantalla de inicio</b>
+          </div>
+        </div>
+      </div>
+    `;
+    throw new Error("Opened in iOS preview (file://). Use Safari.");
+  }
+
+  // ===== Storage Wrapper (fallback si iOS bloquea localStorage) =====
+  let memoryStore = {};
+  function storageGet(key) {
+    try { return localStorage.getItem(key); } catch { return memoryStore[key] ?? null; }
+  }
+  function storageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch { memoryStore[key] = value; }
+  }
+
+  function loadState(){
+    try{
+      const raw = storageGet(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch{ return null; }
+  }
+  function save(){ storageSet(STORAGE_KEY, JSON.stringify(state)); }
+
+  const state = loadState() || { activeDate: todayISO(), checks: {}, overrides: {}, swaps: {} };
+
+  function todayISO(){
+    const d=new Date(); const off=d.getTimezoneOffset();
+    return new Date(d.getTime()-off*60000).toISOString().slice(0,10);
+  }
+  function dowISO(iso){
+    const [y,m,dd]=iso.split("-").map(Number);
+    const d=new Date(y,m-1,dd);
+    const js=d.getDay();
+    return js===0?7:js;
+  }
+  function applies(freq, iso){
+    const d = dowISO(iso);
+    const kind = freq.kind;
+
+    if(kind === "daily") return true;
+    if(kind === "weekly"){
+      const dows = freq.dows || [6];
+      return dows.includes(d);
+    }
+    if(kind === "monthly"){
+      const md = freq.monthDay || 1;
+      return iso.slice(8,10) === String(md).padStart(2,"0");
+    }
+    if(kind === "interval"){
+      const n = freq.intervalDays || 2;
+      const base = "2026-01-01";
+      const days = Math.floor((Date.parse(iso) - Date.parse(base)) / (1000*60*60*24));
+      return days >= 0 && (days % n === 0);
+    }
+    return d === 6;
+  }
+  function isWeekend(iso){
+    const d = dowISO(iso);
+    return (d===6 || d===7);
+  }
+
+  function getDayChecks(date, person){
+    if(!state.checks[date]) state.checks[date] = {};
+    if(!state.checks[date][person]) state.checks[date][person] = {};
+    return state.checks[date][person];
+  }
+  function getDaySwaps(date){
+    if(!state.swaps[date]) state.swaps[date] = {};
+    return state.swaps[date];
+  }
+
+  function applyOverrides(task){
+    const o = state.overrides[task.id];
+    if(!o) return task;
+    return {
+      ...task,
+      title: (o.title ?? task.title),
+      notes: (o.notes ?? task.notes),
+      assignee: (o.assignee ?? task.assignee),
+      assigneeRule: (o.assigneeRule ?? task.assigneeRule)
+    };
+  }
+
+  function resolveAssignee(task, iso){
+    const swap = getDaySwaps(iso)[task.id];
+    if(swap) return swap;
+
+    const t = applyOverrides(task);
+    if(t.assigneeRule && (t.assigneeRule.weekdays || t.assigneeRule.weekends)){
+      return isWeekend(iso) ? (t.assigneeRule.weekends || t.assignee) : (t.assigneeRule.weekdays || t.assignee);
+    }
+    return t.assignee;
+  }
+
+  function tasksForDay(iso){
+    const seen = new Set();
+    const out = [];
+    for(const base of APP.template){
+      if(!applies(base.frequency, iso)) continue;
+      const t = applyOverrides(base);
+      const who = resolveAssignee(t, iso);
+      if(seen.has(t.id)) continue;
+      seen.add(t.id);
+      out.push({ ...t, actualAssignee: who });
+    }
+    return out;
+  }
+
+  function render(){
+    document.getElementById("datePick").value = state.activeDate;
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    const allToday = tasksForDay(state.activeDate);
+
+    APP.people.forEach(person => {
+      const tasks = allToday.filter(t => t.actualAssignee === person);
+      const checks = getDayChecks(state.activeDate, person);
+
+      const doneCount = tasks.filter(t => !!checks[t.id]).length;
+      const total = tasks.length;
+      const pct = total === 0 ? 0 : Math.round((doneCount/total)*100);
+
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="cardHead">
+          <div class="name">👤 ${escapeHTML(person)}</div>
+          <div class="kpi">
+            <div class="badge">${doneCount}/${total}</div>
+            <div class="badge">${pct}%</div>
+          </div>
+        </div>
+        <div class="progressWrap">
+          <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="percent"><span>Progreso</span><span>${pct}%</span></div>
+        <div class="list" id="list-${cssSafe(person)}"></div>
+      `;
+      grid.appendChild(card);
+
+      const listEl = document.getElementById(`list-${cssSafe(person)}`);
+      if(total === 0){
+        listEl.innerHTML = `<div class="empty">No hay tareas para hoy ✨</div>`;
+        return;
+      }
+
+      tasks.forEach(t => {
+        const done = !!checks[t.id];
+        const row = document.createElement("div");
+        row.className = "task" + (done ? " done":"");
+
+        const freqLabel = (t.frequency.raw || t.frequency.kind);
+
+        row.innerHTML = `
+          <input type="checkbox" ${done ? "checked":""} />
+          <div class="meta">
+            <p class="title">${escapeHTML(t.title)}</p>
+            <div class="subline">
+              <span class="chip">🔁 ${escapeHTML(freqLabel)}</span>
+              <button class="miniBtn" data-act="edit">Editar</button>
+              <button class="miniBtn" data-act="swap">Canjear</button>
+              ${t.notes ? `<button class="miniBtn" data-act="detail">Detalle</button>` : ``}
+            </div>
+
+            ${t.notes ? `<div class="details">${escapeHTML(t.notes)}</div>` : ``}
+
+            <div class="editPanel">
+              <div class="row">
+                <input type="text" data-field="title" placeholder="Título" value="${escapeAttr(t.title)}"/>
+              </div>
+              <div style="height:10px"></div>
+              <div class="row">
+                <select data-field="ruleWeekdays"></select>
+                <select data-field="ruleWeekends"></select>
+              </div>
+              <div style="margin-top:10px" class="row">
+                <textarea data-field="notes" placeholder="Notas (opcional)">${escapeHTML(t.notes || "")}</textarea>
+              </div>
+              <div style="margin-top:10px" class="row">
+                <button class="primary" data-act="saveEdit">Guardar</button>
+                <button class="ghost" data-act="cancelEdit">Cerrar</button>
+              </div>
+            </div>
+
+            <div class="editPanel" data-panel="swapPanel">
+              <div class="row">
+                <select data-field="swapTo"></select>
+              </div>
+              <div style="margin-top:10px" class="row">
+                <button class="primary" data-act="saveSwap">Aplicar hoy</button>
+                <button class="ghost" data-act="clearSwap">Quitar</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const cb = row.querySelector("input[type='checkbox']");
+        cb.addEventListener("change", (e) => {
+          checks[t.id] = e.target.checked;
+          save();
+          render();
+          const newDone = tasks.filter(x => !!getDayChecks(state.activeDate, person)[x.id]).length;
+          if(newDone === total) celebrate(person, total);
+        });
+
+        const details = row.querySelector(".details");
+        const editPanel = row.querySelector(".editPanel");
+        const swapPanel = row.querySelector("[data-panel='swapPanel']");
+
+        const selWk = row.querySelector("select[data-field='ruleWeekdays']");
+        const selWe = row.querySelector("select[data-field='ruleWeekends']");
+        const selSwap = row.querySelector("select[data-field='swapTo']");
+
+        const fillPeople = (sel, current) => {
+          sel.innerHTML = "";
+          for(const p of APP.people){
+            const o = document.createElement("option");
+            o.value = p;
+            o.textContent = p;
+            if(p === current) o.selected = true;
+            sel.appendChild(o);
+          }
+        };
+
+        const hasRule = !!(t.assigneeRule && (t.assigneeRule.weekdays || t.assigneeRule.weekends));
+        const wkVal = hasRule ? (t.assigneeRule.weekdays || t.assignee) : t.assignee;
+        const weVal = hasRule ? (t.assigneeRule.weekends || t.assignee) : t.assignee;
+
+        fillPeople(selWk, wkVal);
+        fillPeople(selWe, weVal);
+
+        const existingSwap = getDaySwaps(state.activeDate)[t.id] || t.actualAssignee;
+        fillPeople(selSwap, existingSwap);
+
+        row.querySelectorAll("[data-act]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const act = btn.getAttribute("data-act");
+
+            if(act === "detail" && details){
+              details.style.display = (details.style.display === "block") ? "none" : "block";
+              return;
+            }
+
+            if(act === "edit"){
+              editPanel.style.display = (editPanel.style.display === "block") ? "none" : "block";
+              if(swapPanel) swapPanel.style.display = "none";
+              return;
+            }
+
+            if(act === "swap"){
+              if(swapPanel){
+                swapPanel.style.display = (swapPanel.style.display === "block") ? "none" : "block";
+                editPanel.style.display = "none";
+              }
+              return;
+            }
+
+            if(act === "cancelEdit"){
+              editPanel.style.display = "none";
+              return;
+            }
+
+            if(act === "saveEdit"){
+              const newTitle = row.querySelector("[data-field='title']").value.trim() || t.title;
+              const newNotes = row.querySelector("[data-field='notes']").value.trim();
+              const newWk = selWk.value;
+              const newWe = selWe.value;
+
+              state.overrides[t.id] = state.overrides[t.id] || {};
+              state.overrides[t.id].title = newTitle;
+              state.overrides[t.id].notes = newNotes;
+              state.overrides[t.id].assigneeRule = { weekdays: newWk, weekends: newWe };
+              state.overrides[t.id].assignee = newWk;
+
+              save();
+              render();
+              return;
+            }
+
+            if(act === "saveSwap"){
+              const to = selSwap.value;
+              getDaySwaps(state.activeDate)[t.id] = to;
+              save();
+              render();
+              return;
+            }
+
+            if(act === "clearSwap"){
+              delete getDaySwaps(state.activeDate)[t.id];
+              save();
+              render();
+              return;
+            }
+          });
+        });
+
+        listEl.appendChild(row);
+      });
+    });
+  }
+
+  function celebrate(person, total){
+    const toast = document.getElementById("toast");
+    const title = document.getElementById("toastTitle");
+    const msg = document.getElementById("toastMsg");
+    const phrase = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+    title.textContent = `¡Felicitaciones, ${person}! 🎉`;
+    msg.textContent = `Completaste ${total} tarea(s). ${phrase}`;
+    toast.style.display = "block";
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => toast.style.display="none", 4200);
+  }
+
+  document.getElementById("todayBtn").addEventListener("click", () => {
+    state.activeDate = todayISO(); save(); render();
+  });
+  document.getElementById("datePick").addEventListener("change", (e) => {
+    state.activeDate = e.target.value || todayISO(); save(); render();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    if(!confirm("Esto reinicia TODO el progreso y ediciones. ¿Seguro?")) return;
+    storageSet(STORAGE_KEY, "");
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    location.reload();
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "hogar_progreso_v3_iphone_fix.json"; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  const fileInput = document.getElementById("fileInput");
+  document.getElementById("importBtn").addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    try{
+      const txt = await f.text();
+      const imported = JSON.parse(txt);
+      if(!imported.activeDate || !imported.checks) throw new Error("Formato inválido");
+      storageSet(STORAGE_KEY, JSON.stringify(imported));
+      location.reload();
+    }catch{
+      alert("No pude importar ese archivo. Usa el JSON exportado desde esta app.");
+    }finally{ e.target.value=""; }
+  });
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function escapeAttr(s){
+    return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function cssSafe(s){ return String(s).replace(/[^a-zA-Z0-9_-]/g, "_"); }
+
+  // init
+  save();
+  if(!state.activeDate) state.activeDate = todayISO();
+  render();
+</script>
+</body>
+</html>
